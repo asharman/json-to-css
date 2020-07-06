@@ -3,9 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Change the CSS!</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      .container {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+      }
+
+      button {
+        margin-top: 2em;
+        border: none;
+        background: none;
+        background-color: fuchsia;
+        padding: 1em;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      button:hover {
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+          0 10px 10px rgba(0, 0, 0, 0.22);
+      }
+
+      label {
+        margin: 2em 0;
+      }
+    </style>
   </head>
   <body>
-    <p>Hello World!</p>
+    <h2>Add CSS to this button!</h2>
+
+    <div class="container">
+      <label for="button-bg"
+        >Enter a valid CSS color to change the button's background color</label
+      >
+      <input id="button-bg" type="text" name="background" />
+
+      <button class="button">
+        Submit
+      </button>
+    </div>
+    <script>
+      const button = document.querySelector('.button')
+      const input = document.querySelector('#button-bg')
+
+      button.addEventListener('click', fetchCSS)
+
+      async function fetchCSS(event) {
+        const color = input.value
+
+        const request = {
+          components: [
+            {
+              name: 'button',
+              properties: {
+                'background-color': color,
+              },
+            },
+          ],
+        }
+
+        const response = await fetch('http://localhost:8080', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'text/css',
+          },
+          body: JSON.stringify(request),
+        })
+
+        const text = await response.text()
+
+        console.log(text)
+      }
+    </script>
   </body>
 </html>

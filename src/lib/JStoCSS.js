@@ -1,10 +1,11 @@
 const { Transform } = require('readable-stream');
 
+class JStoCSS extends Transform {
+  constructor() { super({ objectMode: true }) }
 
-const JStoCSS = Transform({
-  objectMode: true,
-  transform(chunk, encoding, callback) {
+  _transform(chunk, encoding, callback) {
     const cssString = chunk.reduce((acc, object) => {
+      console.log(acc);
       acc += `.${object.name} {\n`;
       acc += Object.keys(object.properties).reduce((propertiesString, key) => {
         propertiesString += `  ${key}: ${object.properties[key]};\n`
@@ -15,6 +16,6 @@ const JStoCSS = Transform({
     }, '');
     callback(null, cssString);
   }
-});
+}
 
 module.exports = JStoCSS;

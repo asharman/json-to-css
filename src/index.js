@@ -2,13 +2,12 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-const rs = require('readable-stream');
-const JSONStream = require('JSONStream');
 
-const JStoCSS = require('./lib/JStoCSS');
+const JStoCSS = require('./controllers/JStoCSS');
 
-const server = http.createServer((req, res) => {
+const server = http.createServer();
 
+server.on('request', (req, res) => {
   const route = url.parse(req.url).path;
   switch (route) {
     case "/":
@@ -23,15 +22,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, {
           'Content-Type': 'text/css',
         });
-        rs.pipeline(
-          req,
-          JSONStream.parse('components'),
-          JStoCSS,
-          res,
-          () => {
-            console.log('Done');
-          }
-        )
+        JStoCSS(req, res);
       }
       break;
 
@@ -42,6 +33,6 @@ const server = http.createServer((req, res) => {
       }))
       break;
   }
-});
+})
 
 server.listen(8080);
